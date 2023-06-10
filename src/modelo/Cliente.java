@@ -12,19 +12,15 @@ package modelo;
 public class Cliente {
     
     private int id;
-    private int cedula;
     private String nombre;
     private String apellido;
     private String genero;
-    private String estado;
 
-    public Cliente(int id, int cedula, String nombre, String apellido, String genero, String estado) {
+    public Cliente(int id, String nombre, String apellido, String genero) {
         this.id = id;
-        this.cedula = cedula;
         this.nombre = nombre;
         this.apellido = apellido;
         this.genero = genero;
-        this.estado = estado;
     }
 
     public int getId() {
@@ -33,14 +29,6 @@ public class Cliente {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getCedula() {
-        return cedula;
-    }
-
-    public void setCedula(int cedula) {
-        this.cedula = cedula;
     }
 
     public String getNombre() {
@@ -66,15 +54,8 @@ public class Cliente {
     public void setGenero(String genero) {
         this.genero = genero;
     }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
     
     
+
     
 }

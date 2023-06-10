@@ -5,6 +5,8 @@
  */
 package vistas;
 
+import conexion.Conexion;
+
 /**
  *
  * @author juans
@@ -16,6 +18,9 @@ public class menuPrincipal extends javax.swing.JFrame {
      */
     public menuPrincipal() {
         initComponents();
+        setLocationRelativeTo(this);
+        Conexion conexion = new Conexion();
+        conexion.estableceConexion();
     }
 
     /**
@@ -32,7 +37,7 @@ public class menuPrincipal extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         btnGestionClientes = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        btnGestionarProducto = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -42,8 +47,18 @@ public class menuPrincipal extends javax.swing.JFrame {
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/Almacenes.jpg"))); // NOI18N
 
         btnGestionClientes.setText("Gestionar clientes");
+        btnGestionClientes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGestionClientesActionPerformed(evt);
+            }
+        });
 
-        jButton1.setText("Gestionar Productos");
+        btnGestionarProducto.setText("Gestionar Productos");
+        btnGestionarProducto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGestionarProductoActionPerformed(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         jLabel1.setText("Almacen");
@@ -65,7 +80,7 @@ public class menuPrincipal extends javax.swing.JFrame {
                                 .addGap(6, 6, 6)
                                 .addComponent(btnGestionClientes, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnGestionarProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(94, 94, 94)))))
@@ -81,7 +96,7 @@ public class menuPrincipal extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnGestionClientes, javax.swing.GroupLayout.DEFAULT_SIZE, 54, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnGestionarProducto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -101,6 +116,20 @@ public class menuPrincipal extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnGestionClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionClientesActionPerformed
+        // TODO add your handling code here
+        Gestioncliente gestioncliente = new Gestioncliente();
+        gestioncliente.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnGestionClientesActionPerformed
+
+    private void btnGestionarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGestionarProductoActionPerformed
+        // TODO add your handling code here:
+        GestioProducto gestioProducto = new GestioProducto();
+        gestioProducto.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnGestionarProductoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -139,7 +168,7 @@ public class menuPrincipal extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnGestionClientes;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnGestionarProducto;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
