@@ -1,0 +1,18 @@
+CREATE DATABASE almacen;
+USE almacen;
+
+CREATE TABLE cliente(
+idCliente INT PRIMARY KEY,
+cedulaCliente INT NOT NULL, 
+nombreCliente VARCHAR (255), 
+apellidoCliente VARCHAR (255), 
+generoCliente CHAR (25));
+
+CREATE TABLE producto(
+codigoProducto INT PRIMARY KEY, 
+nombreProducto VARCHAR (100) NOT NULL,
+precioCompra DECIMAL (15,2),
+precioVenta DECIMAL (15,2), 
+cantBodega INT, 
+cantMinRequerida INT, 
+cantMaxInvPermitida INT);

@@ -9,23 +9,20 @@ import conexion.Conexion;
 import java.sql.*;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import modelo.Cliente;
 
 /**
  *
  * @author juans
  */
 public class Gestioncliente extends javax.swing.JFrame {
-    
+
     Conexion con = new Conexion();
     Connection cn;
     Statement st;
     ResultSet rs;
     DefaultTableModel modelo;
-    int id;
-    
-    
-    
+    int idtabla;
+
     public Gestioncliente() {
         initComponents();
         setLocationRelativeTo(this);
@@ -57,7 +54,6 @@ public class Gestioncliente extends javax.swing.JFrame {
         cbxGenero = new javax.swing.JComboBox<>();
         btnAgregar = new javax.swing.JButton();
         btnActualizar = new javax.swing.JButton();
-        btnBuscar = new javax.swing.JButton();
         btnRegresar = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -103,18 +99,17 @@ public class Gestioncliente extends javax.swing.JFrame {
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Gestion Clientes", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 24))); // NOI18N
 
         btnBorrar.setText("Borrar");
+        btnBorrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBorrarActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("Nombre");
 
         jLabel2.setText("Identificacion");
 
         jLabel3.setText("Apellido");
-
-        txtNombre.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtNombreActionPerformed(evt);
-            }
-        });
 
         jLabel4.setText("Genero");
 
@@ -128,11 +123,9 @@ public class Gestioncliente extends javax.swing.JFrame {
         });
 
         btnActualizar.setText("Actualizar");
-
-        btnBuscar.setText("Buscar");
-        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBuscarActionPerformed(evt);
+                btnActualizarActionPerformed(evt);
             }
         });
 
@@ -170,8 +163,7 @@ public class Gestioncliente extends javax.swing.JFrame {
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(btnAgregar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnBuscar))
+                                .addGap(89, 89, 89))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
                                 .addComponent(btnActualizar)
                                 .addGap(24, 24, 24)
@@ -198,10 +190,8 @@ public class Gestioncliente extends javax.swing.JFrame {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(cbxGenero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAgregar)
-                    .addComponent(btnBuscar))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 82, Short.MAX_VALUE)
+                .addComponent(btnAgregar)
                 .addGap(28, 28, 28)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnActualizar)
@@ -215,15 +205,17 @@ public class Gestioncliente extends javax.swing.JFrame {
 
         tblClientes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "Identificacion", "Nombre", "Apellido", "genero"
             }
         ));
+        tblClientes.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblClientesMouseClicked(evt);
+            }
+        });
         jScrollPane3.setViewportView(tblClientes);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -264,14 +256,6 @@ public class Gestioncliente extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtNombreActionPerformed
-
-    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnBuscarActionPerformed
-
     private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
         // TODO add your handling code here:
         menuPrincipal mePrincipal = new menuPrincipal();
@@ -281,69 +265,137 @@ public class Gestioncliente extends javax.swing.JFrame {
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
         // TODO add your handling code here
-        
-        agregar();
-        limpiarCampos();
-        listar();
-        
-    }//GEN-LAST:event_btnAgregarActionPerformed
 
-    public void listar(){
-        String sql = "select * from cliente";
-        try {
-            cn = con.getConnection();
-            st=cn.createStatement();
-            rs=st.executeQuery(sql);
-            Object[]cliente = new Object[4];
-            modelo=(DefaultTableModel)tblClientes.getModel();
-            while (rs.next()) {                
-                cliente[0]=rs.getInt("idCliente");
-                cliente[1]=rs.getString("nombreCliente");
-                cliente[2]=rs.getString("apellidoCliente");
-                cliente[3]=rs.getString("generoCliente");
-                tblClientes.setModel(modelo);
-            }
-            
-        } catch (Exception e) {
-        }
-    }
-    
-    public void agregar(){
-        if(txtNombre.getText().trim().isEmpty() || txtIdentificacion.getText().trim().isEmpty()
-                || txtApellido.getText().trim().isEmpty() || cbxGenero.getSelectedIndex() == 0 ){
+        if (txtNombre.getText().trim().isEmpty() || txtIdentificacion.getText().trim().isEmpty()
+                || txtApellido.getText().trim().isEmpty() || cbxGenero.getSelectedIndex() == 0) {
             JOptionPane.showMessageDialog(null, "faltan campos por llenar");
-        }else{
+        } else {
             String nombre = txtNombre.getText();
             String apellido = txtApellido.getText();
             int id = Integer.parseInt(txtIdentificacion.getText());
             String genero = (String) cbxGenero.getSelectedItem();
-            
-            String sql = "insert into Persona(idCliente, nombreCliente, apellidoCliente, generoCliente) "
-                        + "values('"+id+"', '"+nombre+"', '"+apellido+"', '"+genero+"')";
-            
+
+            String sql = "insert into cliente(idCliente, nombreCliente, apellidoCliente, generoCliente) "
+                    + "values('" + id + "', '" + nombre + "', '" + apellido + "', '" + genero + "')";
+
             try {
-                cn=con.getConnection();
-                st=cn.createStatement();
+                cn = con.estableceConexion();
+                st = cn.createStatement();
                 st.executeQuery(sql);
                 JOptionPane.showMessageDialog(null, "Usuario agregado");
-                
+                limpiarTabla();
+                limpiarCampos();
+                listar();
+
             } catch (Exception e) {
-                
+
             }
         }
+    }//GEN-LAST:event_btnAgregarActionPerformed
+
+    private void tblClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblClientesMouseClicked
+        int fila = tblClientes.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(null, "Uusuario no seleccionado");
+        } else {
+            int id = Integer.parseInt((String) tblClientes.getValueAt(fila, 0).toString());
+            String nombre = (String) tblClientes.getValueAt(fila, 1);
+            String apellido = (String) tblClientes.getValueAt(fila, 2);
+            String genero = (String) tblClientes.getValueAt(fila, 3);
+
+            txtIdentificacion.setText("" + id);
+            txtNombre.setText(nombre);
+            txtApellido.setText(apellido);
+            cbxGenero.setSelectedItem(genero);
+
+        }
+    }//GEN-LAST:event_tblClientesMouseClicked
+
+    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
+        // TODO add your handling code here:
+        String id = txtIdentificacion.getText();
+        String nombre = txtNombre.getText();
+        String apellido = txtApellido.getText();
+        String genero = (String) cbxGenero.getSelectedItem();
+        String sql = "update cliente set idCliente='" + id + "', nombreCliente='" + nombre + "', apellidoCliente='" + apellido + "', generoCliente='" + genero + "' where idCliente=" + id;
+
+        if (txtNombre.getText().trim().isEmpty() || txtIdentificacion.getText().trim().isEmpty()
+                || txtApellido.getText().trim().isEmpty() || cbxGenero.getSelectedIndex() == 0) {
+            JOptionPane.showMessageDialog(null, "faltan campos por llenar");
+        } else {
+            try {
+                cn = con.estableceConexion();
+                st = cn.createStatement();
+                st.executeUpdate(sql);
+                JOptionPane.showMessageDialog(null, "usuario modificado");
+                limpiarCampos();
+                limpiarTabla();
+                listar();
+
+            } catch (Exception e) {
+            }
+        }
+    }//GEN-LAST:event_btnActualizarActionPerformed
+
+    private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
+        int seleccionado = tblClientes.getSelectedRow();
+        String id = txtIdentificacion.getText();
+        if (seleccionado == -1) {
+            JOptionPane.showMessageDialog(null, "debes seleccioanr una fila");
+        }else{
+            String sql = "delete from cliente where idCliente="+id;
+            try {
+                cn= con.estableceConexion();
+                st=cn.createStatement();
+                st.executeUpdate(sql);
+                JOptionPane.showMessageDialog(null, "El cliente fue eliminado con exito");
+                limpiarTabla();
+                limpiarCampos();
+                listar();
+            } catch (Exception e) {
+            }
+        }
+    }//GEN-LAST:event_btnBorrarActionPerformed
+
+    public void listar() {
+        String sql = "select * from cliente";
+        try {
+            cn = con.estableceConexion();
+            st = cn.createStatement();
+            rs = st.executeQuery(sql);
+            Object[] cliente = new Object[4];
+            modelo = (DefaultTableModel) tblClientes.getModel();
+            while (rs.next()) {
+                cliente[0] = rs.getInt("idCliente");
+                cliente[1] = rs.getString("nombreCliente");
+                cliente[2] = rs.getString("apellidoCliente");
+                cliente[3] = rs.getString("generoCliente");
+                modelo.addRow(cliente);
+            }
+            tblClientes.setModel(modelo);
+
+        } catch (Exception e) {
+        }
     }
-    
-    public void limpiarCampos(){
+
+    public void limpiarCampos() {
         txtApellido.setText(null);
         txtIdentificacion.setText(null);
         txtNombre.setText(null);
         cbxGenero.setSelectedIndex(0);
     }
+
+    public void limpiarTabla() {
+        for (int i = 0; i < tblClientes.getRowCount(); i++) {
+            modelo.removeRow(i);
+            i = i - 1;
+        }
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnBorrar;
-    private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnRegresar;
     private javax.swing.JComboBox<String> cbxGenero;
     private javax.swing.JLabel jLabel1;

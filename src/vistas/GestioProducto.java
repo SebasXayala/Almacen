@@ -7,6 +7,7 @@ package vistas;
 
 import conexion.Conexion;
 import java.sql.*;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -28,6 +29,7 @@ public class GestioProducto extends javax.swing.JFrame {
     public GestioProducto() {
         initComponents();
         setLocationRelativeTo(this);
+        listar();
     }
 
     /**
@@ -62,7 +64,6 @@ public class GestioProducto extends javax.swing.JFrame {
         txtCantMax = new javax.swing.JTextField();
         btnAgregar = new javax.swing.JButton();
         btnActualizar = new javax.swing.JButton();
-        btnBuscar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
         btnRegresar = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
@@ -136,13 +137,6 @@ public class GestioProducto extends javax.swing.JFrame {
             }
         });
 
-        btnBuscar.setText("Buscar");
-        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBuscarActionPerformed(evt);
-            }
-        });
-
         btnEliminar.setText("Eliminar");
         btnEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -193,9 +187,7 @@ public class GestioProducto extends javax.swing.JFrame {
                             .addComponent(btnActualizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnAgregar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(btnBuscar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnEliminar, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE)))
+                        .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(btnRegresar)))
@@ -236,14 +228,12 @@ public class GestioProducto extends javax.swing.JFrame {
                     .addComponent(jLabel8)
                     .addComponent(txtCantMax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(36, 36, 36)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAgregar)
-                    .addComponent(btnBuscar))
+                .addComponent(btnAgregar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnActualizar)
                     .addComponent(btnEliminar))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
                 .addComponent(btnRegresar)
                 .addContainerGap())
         );
@@ -252,15 +242,17 @@ public class GestioProducto extends javax.swing.JFrame {
 
         tblInventario.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+
             },
             new String [] {
                 "Codigo", "Nombre", "Precio compra", "Precio venta", "Existencias", "Canridad minima", "Cantidad Maxima"
             }
         ));
+        tblInventario.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblInventarioMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblInventario);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -302,19 +294,84 @@ public class GestioProducto extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+        if (txtCantMax.getText().trim().isEmpty() || txtCantMinima.getText().trim().isEmpty() || txtCodigo.getText().trim().isEmpty()
+                || txtExistencia.getText().trim().isEmpty() || txtNombre.getText().trim().isEmpty() || txtPrecioCompra.getText().trim().isEmpty()
+                || txtPrecioVenta.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "faltan campos por llenar");
+        } else {
+            double cantMax = Double.parseDouble(txtCantMax.getText());
+            double cantMin = Double.parseDouble(txtCantMinima.getText());
+            int codigo = Integer.parseInt(txtCodigo.getText());
+            int existencias = Integer.parseInt(txtExistencia.getText());
+            String nombre = txtNombre.getText();
+            int precioCompra = Integer.parseInt(txtPrecioCompra.getText());
+            int precioVenta = Integer.parseInt(txtPrecioVenta.getText());
 
+            String sql = "insert into producto(codigoProducto, nombreProducto, precioCompra, precioVenta, cantBodega, cantMinRequerida, cantMaxInvPermitida) "
+                    + "values('" + codigo + "', '" + nombre + "', '" + precioCompra + "', '" + precioVenta + "', '" + existencias + "', '" + cantMin + "', '" + cantMax + "')";
+
+            try {
+                cn = con.estableceConexion();
+                st = cn.createStatement();
+                st.executeQuery(sql);
+                JOptionPane.showMessageDialog(null, "Producto agregado");
+                limpiarTabla();
+                limpiarCampos();
+                listar();
+
+            } catch (Exception e) {
+
+            }
+        }
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
-        // TODO add your handling code here:
+        double cantMax = Double.parseDouble(txtCantMax.getText());
+        double cantMin = Double.parseDouble(txtCantMinima.getText());
+        int codigo = Integer.parseInt(txtCodigo.getText());
+        int existencias = Integer.parseInt(txtExistencia.getText());
+        String nombre = txtNombre.getText();
+        int precioCompra = Integer.parseInt(txtPrecioCompra.getText());
+        int precioVenta = Integer.parseInt(txtPrecioVenta.getText());
+        String sql = "update cliente set codigoProducto='" + codigo + "', nombreProducto='" + nombre + "', precioCompra='" + precioCompra + "', precioVenta='" + precioVenta + ", cantBodega='" + existencias + "', cantMinRequerida='" + cantMin + "', cantMaxInvPermitida='" + cantMax + "'' where codigoProducto=" + codigo;
+
+        if (txtCantMax.getText().trim().isEmpty() || txtCantMinima.getText().trim().isEmpty() || txtCodigo.getText().trim().isEmpty()
+                || txtExistencia.getText().trim().isEmpty() || txtNombre.getText().trim().isEmpty() || txtPrecioCompra.getText().trim().isEmpty()
+                || txtPrecioVenta.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "faltan campos por llenar");
+        } else {
+            try {
+                cn = con.estableceConexion();
+                st = cn.createStatement();
+                st.executeUpdate(sql);
+                JOptionPane.showMessageDialog(null, "Producto modificado");
+                limpiarCampos();
+                limpiarTabla();
+                listar();
+
+            } catch (Exception e) {
+            }
+        }
     }//GEN-LAST:event_btnActualizarActionPerformed
 
-    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnBuscarActionPerformed
-
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        // TODO add your handling code here:
+        int seleccionado = tblInventario.getSelectedRow();
+        String id = txtCodigo.getText();
+        if (seleccionado == -1) {
+            JOptionPane.showMessageDialog(null, "debes seleccioanr una fila");
+        }else{
+            String sql = "delete from producto where codigoProducto="+id;
+            try {
+                cn= con.estableceConexion();
+                st=cn.createStatement();
+                st.executeUpdate(sql);
+                JOptionPane.showMessageDialog(null, "El producto fue eliminado con exito");
+                limpiarTabla();
+                limpiarCampos();
+                listar();
+            } catch (Exception e) {
+            }
+        }
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
@@ -323,10 +380,35 @@ public class GestioProducto extends javax.swing.JFrame {
         this.dispose();        // TODO add your handling code here:
     }//GEN-LAST:event_btnRegresarActionPerformed
 
+    private void tblInventarioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblInventarioMouseClicked
+        // TODO add your handling code here:
+        int fila = tblInventario.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(null, "Uusuario no seleccionado");
+        } else {
+            int codigo = Integer.parseInt((String) tblInventario.getValueAt(fila, 0).toString());
+            String nombre = (String) tblInventario.getValueAt(fila, 1);
+            double precioCompra = Double.parseDouble((String) tblInventario.getValueAt(fila, 2));
+            double precioVenta = Double.parseDouble((String) tblInventario.getValueAt(fila, 3));
+            int existencia = Integer.parseInt((String) tblInventario.getValueAt(fila, 4).toString());
+            int cantMin = Integer.parseInt((String) tblInventario.getValueAt(fila, 5).toString());
+            int canrMax = Integer.parseInt((String) tblInventario.getValueAt(fila, 6).toString());
+
+            txtCodigo.setText("" + id);
+            txtNombre.setText(nombre);
+            txtPrecioCompra.setText("" + precioCompra);
+            txtPrecioVenta.setText("" + precioVenta);
+            txtExistencia.setText("" + existencia);
+            txtCantMinima.setText("" + cantMin);
+            txtCantMax.setText("" + cantMin);
+
+        }
+    }//GEN-LAST:event_tblInventarioMouseClicked
+
     public void listar() {
         String sql = "select * from cliente";
         try {
-            cn = con.getConnection();
+            cn = con.estableceConexion();
             st = cn.createStatement();
             rs = st.executeQuery(sql);
             Object[] producto = new Object[7];
@@ -346,10 +428,26 @@ public class GestioProducto extends javax.swing.JFrame {
         }
     }
 
+    public void limpiarCampos() {
+        txtCantMax.setText(null);
+        txtCantMinima.setText(null);
+        txtCodigo.setText(null);
+        txtExistencia.setText(null);
+        txtNombre.setText(null);
+        txtPrecioCompra.setText(null);
+        txtPrecioVenta.setText(null);
+    }
+
+    public void limpiarTabla() {
+        for (int i = 0; i < tblInventario.getRowCount(); i++) {
+            modelo.removeRow(i);
+            i = i - 1;
+        }
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnAgregar;
-    private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnRegresar;
     private javax.swing.JLabel jLabel1;
