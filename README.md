@@ -5,6 +5,7 @@ Este proyecto hace la gestion de clientes y de productos del almacen
 * git
 * java 
 * netbeans
+* mysql workbench
 
 # Metodologia
 * git-flow
